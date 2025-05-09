@@ -35,4 +35,10 @@ public class SkillPreferenceRepositoryImpl implements SkillPreferenceRepository 
     public List<SkillPreference> getAllSkills() {
         return skillTable.scan().items().stream().collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteSkillById(String id) {
+        skillTable.deleteItem(r -> r.key(k -> k.partitionValue(id)));
+    }
+
 }

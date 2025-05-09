@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/skills")
@@ -41,6 +42,29 @@ public class SkillController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<SkillPreference>> getSkillsByUserEmail(@RequestParam String email) {
+        List<SkillPreference> userSkills = skillRepository.getAllSkills()
+            .stream()
+            .filter(skill -> skill.getUserEmail().equalsIgnoreCase(email))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(userSkills);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteSkill(@PathVariable String id) {
+        skillRepository.deleteSkillById(id);
+        return ResponseEntity.ok("Skill deleted");
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateSkill(@RequestBody SkillPreference updatedSkill) {
+        skillRepository.saveSkill(updatedSkill); 
+        return ResponseEntity.ok("Skill updated");
+    }
+
+
 
     @GetMapping("/all")
     public List<Map<String, Object>> getAllSkills() {

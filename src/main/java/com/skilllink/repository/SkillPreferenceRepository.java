@@ -5,5 +5,7 @@ import java.util.List;
 
 public interface SkillPreferenceRepository {
     void saveSkill(SkillPreference skill);
-    List<SkillPreference> getAllSkills(); // ⭐ added
+    List<SkillPreference> getAllSkills(); 
+    void deleteSkillById(String id);
+
 }
