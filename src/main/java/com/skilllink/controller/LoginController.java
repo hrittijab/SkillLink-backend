@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/login")
 @CrossOrigin(origins = "*")
@@ -21,23 +24,23 @@ public class LoginController {
     }
 
     @PostMapping
-    public String login(@RequestBody User loginRequest) {
+    public Map<String, String> login(@RequestBody User loginRequest) {
+        Map<String, String> response = new HashMap<>();
+
         try {
             User existingUser = userRepository.getUserByEmail(loginRequest.getEmail());
 
-            if (existingUser == null) {
-                return "Login failed: User not found";
+            if (existingUser == null || !passwordEncoder.matches(loginRequest.getPasswordHash(), existingUser.getPasswordHash())) {
+                response.put("message", "Invalid credentials");
+                return response;
             }
 
-            // USE passwordEncoder.matches instead of equals
-            if (!passwordEncoder.matches(loginRequest.getPasswordHash(), existingUser.getPasswordHash())) {
-                return "Login failed: Incorrect password";
-            }
-
-            return "Login successful!";
+            response.put("message", "Login successful!");
+            return response;
         } catch (Exception e) {
             e.printStackTrace();
-            return "Login failed: " + e.getMessage();
+            response.put("message", "Login failed: " + e.getMessage());
+            return response;
         }
     }
 }
