@@ -31,7 +31,7 @@ public class ProfileController {
             existingUser.setSkillsOffered(updatedUser.getSkillsOffered());
             existingUser.setSkillsWanted(updatedUser.getSkillsWanted());
 
-            userRepository.updateUser(existingUser); // ⭐ Make sure your repository has updateUser method
+            userRepository.updateUser(existingUser);
 
             return "Profile updated successfully!";
         } catch (Exception e) {

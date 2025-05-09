@@ -15,6 +15,8 @@ public class SkillPreference {
     private String paymentType;    // FREE, PAID, EXCHANGE
     private Double price;           // optional if PAID
     private List<String> exchangeSkills;   // ✅ updated to List<String>
+    private String createdAt;
+
 
     public SkillPreference() {}
 
@@ -73,5 +75,13 @@ public class SkillPreference {
 
     public void setExchangeSkills(List<String> exchangeSkills) {
         this.exchangeSkills = exchangeSkills;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.regions.Region; // <-- you missed this import
+import software.amazon.awssdk.regions.Region; 
 
 @Configuration
 public class DynamoDbConfig {

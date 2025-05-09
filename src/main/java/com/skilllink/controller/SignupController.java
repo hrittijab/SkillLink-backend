@@ -27,7 +27,7 @@ public class SignupController {
 public Map<String, String> signup(@RequestBody User user) {
     Map<String, String> response = new HashMap<>();
     try {
-        System.out.println("Received signup request for email: " + user.getEmail()); // ⭐ Add this
+        System.out.println("Received signup request for email: " + user.getEmail());
 
         String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
