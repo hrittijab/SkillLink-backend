@@ -3,6 +3,8 @@ package com.skilllink.model;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
+import java.util.List;
+
 @DynamoDbBean
 public class SkillPreference {
 
@@ -12,7 +14,7 @@ public class SkillPreference {
     private String preferenceType; // TEACH or LEARN
     private String paymentType;    // FREE, PAID, EXCHANGE
     private Double price;           // optional if PAID
-    private String exchangeSkill;   // optional if EXCHANGE
+    private List<String> exchangeSkills;   // ✅ updated to List<String>
 
     public SkillPreference() {}
 
@@ -65,11 +67,11 @@ public class SkillPreference {
         this.price = price;
     }
 
-    public String getExchangeSkill() {
-        return exchangeSkill;
+    public List<String> getExchangeSkills() {
+        return exchangeSkills;
     }
 
-    public void setExchangeSkill(String exchangeSkill) {
-        this.exchangeSkill = exchangeSkill;
+    public void setExchangeSkills(List<String> exchangeSkills) {
+        this.exchangeSkills = exchangeSkills;
     }
 }
