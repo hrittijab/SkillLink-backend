@@ -33,4 +33,8 @@ public class UserRepository {
     public void updateUser(User user) {
         userTable.updateItem(user);
     }
+    public void deleteUserByEmail(String email) {
+    userTable.deleteItem(r -> r.key(k -> k.partitionValue(email)));
+}
+
 }
