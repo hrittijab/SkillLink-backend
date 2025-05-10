@@ -25,7 +25,8 @@ public class UserController {
 
     @GetMapping("/{email}")
     public ResponseEntity<User> getUser(@PathVariable String email) {
-        User user = userRepository.getUserByEmail(email);
+        String normalizedEmail = email.trim().toLowerCase();
+        User user = userRepository.getUserByEmail(normalizedEmail);
         return user != null
                 ? ResponseEntity.ok(user)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -33,21 +34,23 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
-        User existingUser = userRepository.getUserByEmail(updatedUser.getEmail());
+        String normalizedEmail = updatedUser.getEmail().trim().toLowerCase();
+        User existingUser = userRepository.getUserByEmail(normalizedEmail);
         if (existingUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+        updatedUser.setEmail(normalizedEmail);
         updatedUser.setPasswordHash(existingUser.getPasswordHash());
 
         userRepository.updateUser(updatedUser);
         return ResponseEntity.ok(updatedUser);
     }
 
-
     @PostMapping("/verify-password")
     public ResponseEntity<String> verifyPassword(@RequestBody PasswordVerifyRequest request) {
-        User user = userRepository.getUserByEmail(request.getEmail());
+        String normalizedEmail = request.getEmail().trim().toLowerCase();
+        User user = userRepository.getUserByEmail(normalizedEmail);
         if (user != null && passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             return ResponseEntity.ok("Password verified");
         }
@@ -56,7 +59,8 @@ public class UserController {
 
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest req) {
-        User user = userRepository.getUserByEmail(req.getEmail());
+        String normalizedEmail = req.getEmail().trim().toLowerCase();
+        User user = userRepository.getUserByEmail(normalizedEmail);
         if (user != null && passwordEncoder.matches(req.getOldPassword(), user.getPasswordHash())) {
             user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
             userRepository.updateUser(user);
@@ -67,7 +71,8 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam String email) {
-        userRepository.deleteUserByEmail(email);
+        String normalizedEmail = email.trim().toLowerCase();
+        userRepository.deleteUserByEmail(normalizedEmail);
         return ResponseEntity.ok("User deleted successfully");
     }
 }

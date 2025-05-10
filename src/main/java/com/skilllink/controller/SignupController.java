@@ -24,22 +24,24 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-public Map<String, String> signup(@RequestBody User user) {
-    Map<String, String> response = new HashMap<>();
-    try {
-        System.out.println("Received signup request for email: " + user.getEmail());
+    public Map<String, String> signup(@RequestBody User user) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            String normalizedEmail = user.getEmail().trim().toLowerCase();
+            user.setEmail(normalizedEmail);
 
-        String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
-        user.setPasswordHash(hashedPassword);
+            System.out.println("Received signup request for email: " + normalizedEmail);
 
-        userRepository.saveUser(user);
+            String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
+            user.setPasswordHash(hashedPassword);
 
-        response.put("message", "Signup successful!");
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.put("message", "Signup failed: " + e.getMessage());
+            userRepository.saveUser(user);
+
+            response.put("message", "Signup successful!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "Signup failed: " + e.getMessage());
+        }
+        return response;
     }
-    return response;
-}
-
 }

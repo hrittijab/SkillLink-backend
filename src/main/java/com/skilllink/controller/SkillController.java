@@ -33,7 +33,12 @@ public class SkillController {
         Map<String, String> response = new HashMap<>();
         try {
             skill.setId(UUID.randomUUID().toString());
-            skill.setCreatedAt(Instant.now().toString()); 
+            skill.setCreatedAt(Instant.now().toString());
+
+            if (skill.getUserEmail() != null) {
+                skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
+            }
+
             skillRepository.saveSkill(skill);
             response.put("message", "Skill added successfully!");
             return ResponseEntity.ok(response);
@@ -45,9 +50,10 @@ public class SkillController {
 
     @GetMapping("/user")
     public ResponseEntity<List<SkillPreference>> getSkillsByUserEmail(@RequestParam String email) {
+        String normalizedEmail = email.trim().toLowerCase();
         List<SkillPreference> userSkills = skillRepository.getAllSkills()
             .stream()
-            .filter(skill -> skill.getUserEmail().equalsIgnoreCase(email))
+            .filter(skill -> skill.getUserEmail() != null && skill.getUserEmail().equalsIgnoreCase(normalizedEmail))
             .collect(Collectors.toList());
         return ResponseEntity.ok(userSkills);
     }
@@ -60,11 +66,12 @@ public class SkillController {
 
     @PutMapping("/update")
     public ResponseEntity<String> updateSkill(@RequestBody SkillPreference updatedSkill) {
-        skillRepository.saveSkill(updatedSkill); 
+        if (updatedSkill.getUserEmail() != null) {
+            updatedSkill.setUserEmail(updatedSkill.getUserEmail().trim().toLowerCase());
+        }
+        skillRepository.saveSkill(updatedSkill);
         return ResponseEntity.ok("Skill updated");
     }
-
-
 
     @GetMapping("/all")
     public List<Map<String, Object>> getAllSkills() {
@@ -82,7 +89,10 @@ public class SkillController {
             item.put("exchangeSkills", skill.getExchangeSkills());
             item.put("createdAt", skill.getCreatedAt());
 
-            User user = userRepository.getUserByEmail(skill.getUserEmail());
+            String normalizedEmail = skill.getUserEmail() != null
+                    ? skill.getUserEmail().trim().toLowerCase()
+                    : null;
+            User user = userRepository.getUserByEmail(normalizedEmail);
             if (user != null) {
                 item.put("firstName", user.getFirstName());
                 item.put("lastName", user.getLastName());
