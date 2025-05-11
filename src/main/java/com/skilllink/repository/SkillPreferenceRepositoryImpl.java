@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 
 import jakarta.annotation.PostConstruct;
 import java.util.List;
@@ -25,6 +26,10 @@ public class SkillPreferenceRepositoryImpl implements SkillPreferenceRepository 
     public void init() {
         skillTable = enhancedClient.table("SkillPreference", software.amazon.awssdk.enhanced.dynamodb.TableSchema.fromBean(SkillPreference.class));
     }
+    public SkillPreference getSkillById(String id) {
+    return skillTable.getItem(Key.builder().partitionValue(id).build());
+}
+
 
     @Override
     public void saveSkill(SkillPreference skill) {
@@ -33,7 +38,17 @@ public class SkillPreferenceRepositoryImpl implements SkillPreferenceRepository 
 
     @Override
     public List<SkillPreference> getAllSkills() {
-        return skillTable.scan().items().stream().collect(Collectors.toList());
+        try {
+            List<SkillPreference> items = skillTable.scan().items().stream().collect(Collectors.toList());
+            System.out.println("✅ DynamoDB scan successful: Retrieved " + items.size() + " skill(s)");
+            for (SkillPreference skill : items) {
+                System.out.println("🔹 Skill: " + skill.getSkillName() + " | ID: " + skill.getId());
+            }
+            return items;
+        } catch (Exception e) {
+            System.out.println("❌ DynamoDB scan failed: " + e.getMessage());
+            return List.of();
+        }
     }
 
     @Override

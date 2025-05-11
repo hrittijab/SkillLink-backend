@@ -7,5 +7,7 @@ public interface SkillPreferenceRepository {
     void saveSkill(SkillPreference skill);
     List<SkillPreference> getAllSkills(); 
     void deleteSkillById(String id);
+    SkillPreference getSkillById(String id);
+
 
 }

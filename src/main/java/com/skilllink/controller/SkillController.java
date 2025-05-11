@@ -73,34 +73,52 @@ public class SkillController {
         return ResponseEntity.ok("Skill updated");
     }
 
+    @GetMapping("/{id}")
+public ResponseEntity<SkillPreference> getSkillById(@PathVariable String id) {
+    SkillPreference skill = skillRepository.getSkillById(id);
+    if (skill != null) {
+        return ResponseEntity.ok(skill);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+}
+
+
     @GetMapping("/all")
-    public List<Map<String, Object>> getAllSkills() {
-        List<SkillPreference> skills = skillRepository.getAllSkills();
-        List<Map<String, Object>> enriched = new ArrayList<>();
+public List<Map<String, Object>> getAllSkills() {
+    List<SkillPreference> skills = skillRepository.getAllSkills();
+    System.out.println("📦 Retrieved skills from DB: " + skills.size());
 
-        for (SkillPreference skill : skills) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("id", skill.getId());
-            item.put("userEmail", skill.getUserEmail());
-            item.put("skillName", skill.getSkillName());
-            item.put("preferenceType", skill.getPreferenceType());
-            item.put("paymentType", skill.getPaymentType());
-            item.put("price", skill.getPrice());
-            item.put("exchangeSkills", skill.getExchangeSkills());
-            item.put("createdAt", skill.getCreatedAt());
+    List<Map<String, Object>> enriched = new ArrayList<>();
 
-            String normalizedEmail = skill.getUserEmail() != null
-                    ? skill.getUserEmail().trim().toLowerCase()
-                    : null;
-            User user = userRepository.getUserByEmail(normalizedEmail);
-            if (user != null) {
-                item.put("firstName", user.getFirstName());
-                item.put("lastName", user.getLastName());
-            }
+    for (SkillPreference skill : skills) {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", skill.getId());
+        item.put("userEmail", skill.getUserEmail());
+        item.put("skillName", skill.getSkillName());
+        item.put("preferenceType", skill.getPreferenceType());
+        item.put("paymentType", skill.getPaymentType());
+        item.put("price", skill.getPrice());
+        item.put("exchangeSkills", skill.getExchangeSkills());
+        item.put("createdAt", skill.getCreatedAt());
 
-            enriched.add(item);
+        String normalizedEmail = skill.getUserEmail() != null
+                ? skill.getUserEmail().trim().toLowerCase()
+                : null;
+
+        User user = userRepository.getUserByEmail(normalizedEmail);
+        if (user != null) {
+            item.put("firstName", user.getFirstName());
+            item.put("lastName", user.getLastName());
+        } else {
+            System.out.println("⚠️ User not found for: " + normalizedEmail);
         }
 
-        return enriched;
+        enriched.add(item);
     }
+
+    System.out.println("✅ Returning " + enriched.size() + " enriched posts");
+    return enriched;
+}
+
 }

@@ -14,7 +14,7 @@ public class SkillPreference {
     private String preferenceType; // TEACH or LEARN
     private String paymentType;    // FREE, PAID, EXCHANGE
     private Double price;           // optional if PAID
-    private List<String> exchangeSkills;   // ✅ updated to List<String>
+    private List<String> exchangeSkills;   
     private String createdAt;
 
 
