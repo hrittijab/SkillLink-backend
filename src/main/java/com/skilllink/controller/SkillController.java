@@ -5,10 +5,9 @@ import com.skilllink.model.User;
 import com.skilllink.repository.SkillPreferenceRepository;
 import com.skilllink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.*;
@@ -38,6 +37,9 @@ public class SkillController {
             if (skill.getUserEmail() != null) {
                 skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
             }
+
+            // ✅ Set default status as ACTIVE
+            skill.setStatus("ACTIVE");
 
             skillRepository.saveSkill(skill);
             response.put("message", "Skill added successfully!");
@@ -74,51 +76,50 @@ public class SkillController {
     }
 
     @GetMapping("/{id}")
-public ResponseEntity<SkillPreference> getSkillById(@PathVariable String id) {
-    SkillPreference skill = skillRepository.getSkillById(id);
-    if (skill != null) {
-        return ResponseEntity.ok(skill);
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<SkillPreference> getSkillById(@PathVariable String id) {
+        SkillPreference skill = skillRepository.getSkillById(id);
+        if (skill != null) {
+            return ResponseEntity.ok(skill);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
-}
-
 
     @GetMapping("/all")
-public List<Map<String, Object>> getAllSkills() {
-    List<SkillPreference> skills = skillRepository.getAllSkills();
-    System.out.println("📦 Retrieved skills from DB: " + skills.size());
+    public List<Map<String, Object>> getAllSkills() {
+        List<SkillPreference> skills = skillRepository.getAllSkills();
+        System.out.println("📦 Retrieved skills from DB: " + skills.size());
 
-    List<Map<String, Object>> enriched = new ArrayList<>();
+        List<Map<String, Object>> enriched = new ArrayList<>();
 
-    for (SkillPreference skill : skills) {
-        Map<String, Object> item = new HashMap<>();
-        item.put("id", skill.getId());
-        item.put("userEmail", skill.getUserEmail());
-        item.put("skillName", skill.getSkillName());
-        item.put("preferenceType", skill.getPreferenceType());
-        item.put("paymentType", skill.getPaymentType());
-        item.put("price", skill.getPrice());
-        item.put("exchangeSkills", skill.getExchangeSkills());
-        item.put("createdAt", skill.getCreatedAt());
+        for (SkillPreference skill : skills) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", skill.getId());
+            item.put("userEmail", skill.getUserEmail());
+            item.put("skillName", skill.getSkillName());
+            item.put("preferenceType", skill.getPreferenceType());
+            item.put("paymentType", skill.getPaymentType());
+            item.put("price", skill.getPrice());
+            item.put("exchangeSkills", skill.getExchangeSkills());
+            item.put("createdAt", skill.getCreatedAt());
+            item.put("status", skill.getStatus()); // ✅ Include status in frontend
 
-        String normalizedEmail = skill.getUserEmail() != null
-                ? skill.getUserEmail().trim().toLowerCase()
-                : null;
+            String normalizedEmail = skill.getUserEmail() != null
+                    ? skill.getUserEmail().trim().toLowerCase()
+                    : null;
 
-        User user = userRepository.getUserByEmail(normalizedEmail);
-        if (user != null) {
-            item.put("firstName", user.getFirstName());
-            item.put("lastName", user.getLastName());
-        } else {
-            System.out.println("⚠️ User not found for: " + normalizedEmail);
+            User user = userRepository.getUserByEmail(normalizedEmail);
+            if (user != null) {
+                item.put("firstName", user.getFirstName());
+                item.put("lastName", user.getLastName());
+            } else {
+                System.out.println("⚠️ User not found for: " + normalizedEmail);
+            }
+
+            enriched.add(item);
         }
 
-        enriched.add(item);
+        System.out.println("✅ Returning " + enriched.size() + " enriched posts");
+        return enriched;
     }
-
-    System.out.println("✅ Returning " + enriched.size() + " enriched posts");
-    return enriched;
-}
-
 }

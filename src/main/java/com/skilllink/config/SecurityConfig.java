@@ -31,7 +31,11 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .requestMatchers(
                 "/api/signup",
                 "/api/login",
-                "/api/skills/**" 
+                "/api/skills/**",
+                "/api/messages/**",
+                "/chat/**",           // ✅ Needed for SockJS to work
+                "/topic/**",          // ✅ Broker sends messages here
+                "/app/**"             // ✅ For MessageMapping (e.g., /app/chat.send)
             ).permitAll()
             .anyRequest().authenticated()
         )

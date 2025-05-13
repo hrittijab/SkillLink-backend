@@ -14,9 +14,9 @@ public class SkillPreference {
     private String preferenceType; // TEACH or LEARN
     private String paymentType;    // FREE, PAID, EXCHANGE
     private Double price;           // optional if PAID
-    private List<String> exchangeSkills;   
+    private List<String> exchangeSkills;
     private String createdAt;
-
+    private String status; // ✅ NEW FIELD
 
     public SkillPreference() {}
 
@@ -80,8 +80,17 @@ public class SkillPreference {
     public String getCreatedAt() {
         return createdAt;
     }
-    
+
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
+

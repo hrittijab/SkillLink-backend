@@ -24,32 +24,60 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain)
+        throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+    String path = request.getRequestURI();
+    System.out.println("🔍 Request URI: " + path);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+    // ✅ Skip JWT check for public endpoints
+    if (path.equals("/api/signup") ||
+        path.equals("/api/login") ||
+        path.equals("/api/messages/previews") ||
+        path.equals("/api/messages/conversations") ||
+        path.equals("/api/messages/conversation") ||
+        path.startsWith("/api/skills") ||
+        path.startsWith("/chat") || 
+        path.startsWith("/topic") || 
+        path.startsWith("/app")) {
 
-            if (jwtUtil.isTokenValid(token)) {
-                String email = jwtUtil.extractEmail(token);
-                User user = userRepository.getUserByEmail(email);
-
-                if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(user, null, null);
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
-        }
-
+        System.out.println("🛑 Skipping JWT validation for: " + path);
         filterChain.doFilter(request, response);
+        return;
     }
+
+    String authHeader = request.getHeader("Authorization");
+    System.out.println("🔑 Authorization Header: " + authHeader);
+
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        String token = authHeader.substring(7);
+
+        if (jwtUtil.isTokenValid(token)) {
+            String email = jwtUtil.extractEmail(token);
+            User user = userRepository.getUserByEmail(email);
+
+            if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(user, null, null);
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("✅ Authenticated user: " + email);
+            }
+        } else {
+            System.out.println("❌ Invalid JWT token.");
+        }
+    } else {
+        System.out.println("⚠️ No Authorization header found.");
+    }
+
+    filterChain.doFilter(request, response);
+}
+
+
+
 }
