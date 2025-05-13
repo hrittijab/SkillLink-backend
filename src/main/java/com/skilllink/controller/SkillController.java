@@ -38,10 +38,9 @@ public class SkillController {
                 skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
             }
 
-            // ✅ Set default status as ACTIVE
-            skill.setStatus("ACTIVE");
-
+            skill.setStatus("ACTIVE"); // ✅ Default status
             skillRepository.saveSkill(skill);
+
             response.put("message", "Skill added successfully!");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -102,7 +101,7 @@ public class SkillController {
             item.put("price", skill.getPrice());
             item.put("exchangeSkills", skill.getExchangeSkills());
             item.put("createdAt", skill.getCreatedAt());
-            item.put("status", skill.getStatus()); 
+            item.put("status", skill.getStatus());
 
             String normalizedEmail = skill.getUserEmail() != null
                     ? skill.getUserEmail().trim().toLowerCase()
@@ -112,6 +111,7 @@ public class SkillController {
             if (user != null) {
                 item.put("firstName", user.getFirstName());
                 item.put("lastName", user.getLastName());
+                item.put("profilePictureUrl", user.getProfilePictureUrl()); // ✅ ✅ ✅ ADD THIS LINE
             } else {
                 System.out.println("⚠️ User not found for: " + normalizedEmail);
             }
