@@ -2,6 +2,13 @@ package com.skilllink.dto;
 
 import java.time.Instant;
 
+/**
+ * DTO representing a chat preview between the current user and another user.
+ * Includes the other user's email, name, profile picture, last message exchanged,
+ * and the timestamp of that message.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 public class ConversationPreview {
     private String otherUserEmail;
     private String otherUserName;

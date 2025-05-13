@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing chat messages and conversations.
+ * Provides endpoints for sending messages, retrieving chat history, and showing conversation previews.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @RestController
 @RequestMapping("/api/messages")
 @CrossOrigin(origins = "*")
@@ -23,6 +29,9 @@ public class MessageController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Saves a new message sent between users.
+     */
     @PostMapping("/send")
     public Message sendMessage(@RequestBody Message message) {
         if (message.getTimestamp() == null) {
@@ -31,6 +40,9 @@ public class MessageController {
         return messageRepository.save(message);
     }
 
+    /**
+     * Retrieves all messages exchanged between two users.
+     */
     @GetMapping("/conversation")
     public List<Message> getMessages(
             @RequestParam String user1,
@@ -39,20 +51,22 @@ public class MessageController {
         return messageRepository.findConversationBetween(user1, user2);
     }
 
+    /**
+     * Returns a list of unique conversation partners for a given user.
+     */
     @GetMapping("/conversations")
     public List<String> getConversations(@RequestParam String email) {
         return messageRepository.findDistinctChatPartners(email);
     }
 
+    /**
+     * Returns a list of the most recent message from each conversation for the given user.
+     */
     @GetMapping(value = "/previews", produces = "application/json")
     public List<ConversationPreview> getConversationPreviews(@RequestParam String email) {
-        System.out.println("✅ Reached /previews endpoint for: " + email);
-
         List<Message> latestMessages = messageRepository.findLatestMessagesPerContact(email);
-        System.out.println("🧾 Messages found: " + (latestMessages != null ? latestMessages.size() : 0));
 
         if (latestMessages == null || latestMessages.isEmpty()) {
-            System.out.println("🚫 No messages found. Returning empty JSON list.");
             return List.of(); 
         }
 
@@ -70,8 +84,6 @@ public class MessageController {
             String profilePicture = (otherUser != null)
                     ? otherUser.getProfilePictureUrl()
                     : "";
-
-            System.out.println("➡️ Preview: " + otherEmail + " | Msg: " + msg.getContent());
 
             return new ConversationPreview(
                     otherEmail,

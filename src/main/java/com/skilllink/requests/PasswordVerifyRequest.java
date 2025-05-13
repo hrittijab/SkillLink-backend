@@ -1,5 +1,12 @@
 package com.skilllink.requests;
 
+/**
+ * Request object used for verifying a user's password.
+ * Used before sensitive operations like account deletion, post deletion etc.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
+
 public class PasswordVerifyRequest {
     private String email;
     private String password;

@@ -1,5 +1,12 @@
 package com.skilllink.requests;
 
+/**
+ * Request object for handling password change operations.
+ * Contains the user's email, old password, and new password.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
+
 public class PasswordChangeRequest {
     private String email;
     private String oldPassword;

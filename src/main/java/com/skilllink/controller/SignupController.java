@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller for handling user sign-up.
+ * Accepts user data, hashes the password, saves the user, and returns a JWT.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
@@ -26,6 +32,12 @@ public class SignupController {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Registers a new user and returns a JWT if successful.
+     *
+     * @param user the user details
+     * @return a success message and also a JWT token or an error message
+     */
     @PostMapping("/signup")
     public Map<String, String> signup(@RequestBody User user) {
         Map<String, String> response = new HashMap<>();
@@ -33,21 +45,15 @@ public class SignupController {
             String normalizedEmail = user.getEmail().trim().toLowerCase();
             user.setEmail(normalizedEmail);
 
-            System.out.println("✅ Received signup request for email: " + normalizedEmail);
-
             String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
             user.setPasswordHash(hashedPassword);
 
             userRepository.saveUser(user);
 
-            // ✅ Generate JWT token
             String token = jwtUtil.generateToken(normalizedEmail);
             response.put("token", token);
             response.put("message", "Signup successful!");
-
-            System.out.println("🔐 Token issued: " + token);
         } catch (Exception e) {
-            e.printStackTrace();
             response.put("message", "Signup failed: " + e.getMessage());
         }
         return response;

@@ -3,17 +3,23 @@ package com.skilllink.model;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
+/**
+ * Represents a user profile in the SkillLink platform.
+ * Includes user authentication data and optional profile information.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @DynamoDbBean
 public class User {
 
-    private String email;
-    private String passwordHash;
-    private String firstName;
-    private String lastName;
-    private String profilePictureUrl; 
-    private String bio;                
-    private String skillsOffered;       
-    private String skillsWanted;        
+    private String email;               // User's email (used as the partition key)
+    private String passwordHash;        // Hashed password for authentication
+    private String firstName;           // First name of the user
+    private String lastName;            // Last name of the user
+    private String profilePictureUrl;   // Optional profile picture URL
+    private String bio;                 // Short biography/description
+    private String skillsOffered;       // Skills the user can teach
+    private String skillsWanted;        // Skills the user wants to learn
 
     public User() {}
 

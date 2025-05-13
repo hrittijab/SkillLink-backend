@@ -11,6 +11,12 @@ import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of SkillPreferenceRepository for DynamoDB.
+ * Manages CRUD operations for skill preferences using DynamoDB client.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @Repository
 public class SkillPreferenceRepositoryImpl implements SkillPreferenceRepository {
 
@@ -22,38 +28,47 @@ public class SkillPreferenceRepositoryImpl implements SkillPreferenceRepository 
         this.enhancedClient = enhancedClient;
     }
 
+    /**
+     * Initializes the DynamoDB table reference after dependency injection.
+     */
     @PostConstruct
     public void init() {
         skillTable = enhancedClient.table("SkillPreference", software.amazon.awssdk.enhanced.dynamodb.TableSchema.fromBean(SkillPreference.class));
     }
+
+    /**
+     * Retrieves a skill preference by ID.
+     */
+    @Override
     public SkillPreference getSkillById(String id) {
-    return skillTable.getItem(Key.builder().partitionValue(id).build());
-}
+        return skillTable.getItem(Key.builder().partitionValue(id).build());
+    }
 
-
+    /**
+     * Saves or updates a skill preference.
+     */
     @Override
     public void saveSkill(SkillPreference skill) {
         skillTable.putItem(skill);
     }
 
+    /**
+     * Retrieves all skill preferences from the table.
+     */
     @Override
     public List<SkillPreference> getAllSkills() {
         try {
-            List<SkillPreference> items = skillTable.scan().items().stream().collect(Collectors.toList());
-            System.out.println("✅ DynamoDB scan successful: Retrieved " + items.size() + " skill(s)");
-            for (SkillPreference skill : items) {
-                System.out.println("🔹 Skill: " + skill.getSkillName() + " | ID: " + skill.getId());
-            }
-            return items;
+            return skillTable.scan().items().stream().collect(Collectors.toList());
         } catch (Exception e) {
-            System.out.println("❌ DynamoDB scan failed: " + e.getMessage());
             return List.of();
         }
     }
 
+    /**
+     * Deletes a skill preference by its ID.
+     */
     @Override
     public void deleteSkillById(String id) {
         skillTable.deleteItem(r -> r.key(k -> k.partitionValue(id)));
     }
-
-}
+} 

@@ -4,7 +4,9 @@ import com.skilllink.model.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-
+/**
+ * Handles WebSocket messages for chat functionality.
+ */
 @Controller
 public class ChatController {
 

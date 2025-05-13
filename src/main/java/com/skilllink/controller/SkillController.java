@@ -13,6 +13,12 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing skill posts in SkillLink.
+ * Handles skill creation, updates, deletion, and retrieval.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @RestController
 @RequestMapping("/api/skills")
 @CrossOrigin(origins = "*")
@@ -27,6 +33,9 @@ public class SkillController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Adds a new skill post.
+     */
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> addSkill(@RequestBody SkillPreference skill) {
         Map<String, String> response = new HashMap<>();
@@ -38,7 +47,7 @@ public class SkillController {
                 skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
             }
 
-            skill.setStatus("ACTIVE"); // ✅ Default status
+            skill.setStatus("ACTIVE");
             skillRepository.saveSkill(skill);
 
             response.put("message", "Skill added successfully!");
@@ -49,6 +58,9 @@ public class SkillController {
         }
     }
 
+    /**
+     * Retrieves all skills posted by a specific user.
+     */
     @GetMapping("/user")
     public ResponseEntity<List<SkillPreference>> getSkillsByUserEmail(@RequestParam String email) {
         String normalizedEmail = email.trim().toLowerCase();
@@ -59,12 +71,18 @@ public class SkillController {
         return ResponseEntity.ok(userSkills);
     }
 
+    /**
+     * Deletes a skill post by ID.
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteSkill(@PathVariable String id) {
         skillRepository.deleteSkillById(id);
         return ResponseEntity.ok("Skill deleted");
     }
 
+    /**
+     * Updates an existing skill post.
+     */
     @PutMapping("/update")
     public ResponseEntity<String> updateSkill(@RequestBody SkillPreference updatedSkill) {
         if (updatedSkill.getUserEmail() != null) {
@@ -74,6 +92,9 @@ public class SkillController {
         return ResponseEntity.ok("Skill updated");
     }
 
+    /**
+     * Retrieves a single skill post by its ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<SkillPreference> getSkillById(@PathVariable String id) {
         SkillPreference skill = skillRepository.getSkillById(id);
@@ -84,11 +105,12 @@ public class SkillController {
         }
     }
 
+    /**
+     * Retrieves all skill posts and fills them with user profile information.
+     */
     @GetMapping("/all")
     public List<Map<String, Object>> getAllSkills() {
         List<SkillPreference> skills = skillRepository.getAllSkills();
-        System.out.println("📦 Retrieved skills from DB: " + skills.size());
-
         List<Map<String, Object>> enriched = new ArrayList<>();
 
         for (SkillPreference skill : skills) {
@@ -111,15 +133,12 @@ public class SkillController {
             if (user != null) {
                 item.put("firstName", user.getFirstName());
                 item.put("lastName", user.getLastName());
-                item.put("profilePictureUrl", user.getProfilePictureUrl()); // ✅ ✅ ✅ ADD THIS LINE
-            } else {
-                System.out.println("⚠️ User not found for: " + normalizedEmail);
+                item.put("profilePictureUrl", user.getProfilePictureUrl());
             }
 
             enriched.add(item);
         }
 
-        System.out.println("✅ Returning " + enriched.size() + " enriched posts");
         return enriched;
     }
 }

@@ -5,18 +5,25 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 
 import java.util.List;
 
+/**
+ * Represents a skill post in the SkillLink exploreSkills page.
+ * This includes the skill name, user association, preference (teach/learn),
+ * payment type.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @DynamoDbBean
 public class SkillPreference {
 
-    private String id; // random UUID
-    private String userEmail; // to link to user
-    private String skillName;
-    private String preferenceType; // TEACH or LEARN
-    private String paymentType;    // FREE, PAID, EXCHANGE
-    private Double price;           // optional if PAID
-    private List<String> exchangeSkills;
-    private String createdAt;
-    private String status; 
+    private String id; // Unique identifier (UUID)
+    private String userEmail; // Email of the user who created the post
+    private String skillName; // Name of the skill
+    private String preferenceType; // "TEACH" or "LEARN"
+    private String paymentType;    // "FREE", "PAID", or "EXCHANGE"
+    private Double price;           // Price (only relevant if paymentType is PAID)
+    private List<String> exchangeSkills; // Skills user wants in exchange (if applicable)
+    private String createdAt; // Timestamp string
+    private String status; // Status of the post (ACTIVE, INACTIVE)
 
     public SkillPreference() {}
 
@@ -93,4 +100,3 @@ public class SkillPreference {
         this.status = status;
     }
 }
-

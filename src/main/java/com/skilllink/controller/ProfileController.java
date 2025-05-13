@@ -5,6 +5,11 @@ import com.skilllink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for managing user profile setup and updates.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @RestController
 @RequestMapping("/api/profile")
 @CrossOrigin(origins = "*")
@@ -17,6 +22,12 @@ public class ProfileController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Updates or sets up a user's profile based on provided details.
+     *
+     * @param updatedUser the user object with new profie details
+     * @return message indicating success or failure
+     */
     @PostMapping("/setup")
     public String saveProfile(@RequestBody User updatedUser) {
         try {
@@ -35,7 +46,6 @@ public class ProfileController {
 
             return "Profile updated successfully!";
         } catch (Exception e) {
-            e.printStackTrace();
             return "Profile setup failed: " + e.getMessage();
         }
     }

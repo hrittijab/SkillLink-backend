@@ -14,6 +14,11 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Service to handle interactions with AWS S3 for uploading profile pictures.
+ *
+ * Author: Hrittija Bhattacharjee
+ */
 @Service
 public class S3Service {
 
@@ -31,14 +36,11 @@ public class S3Service {
 
     private S3Client s3;
 
+    /**
+     * Initializes the S3 client after the service is constructed.
+     */
     @PostConstruct
     public void init() {
-        System.out.println("🪣 S3 Service Initialized:");
-        System.out.println("   - Bucket: " + bucket);
-        System.out.println("   - Region: " + region);
-        System.out.println("   - AccessKey present: " + (accessKey != null));
-        System.out.println("   - SecretKey present: " + (secretKey != null));
-
         s3 = S3Client.builder()
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(
@@ -47,28 +49,31 @@ public class S3Service {
                 .build();
     }
 
+    /**
+     * Uploads a profile picture to the configured S3 bucket.
+     *
+     * @param email the email of the user (used in the key name)
+     * @param file  the profile picture file to upload
+     * @return the public URL of the uploaded image
+     * @throws IOException if reading the file input stream fails
+     */
     public String uploadProfilePicture(String email, MultipartFile file) throws IOException {
-    String sanitizedEmail = email.replace("@", "_"); // Optional: avoid @ in key
-    String key = "profile-pics/" + sanitizedEmail + "_" + UUID.randomUUID() + "_" + file.getOriginalFilename();
-    System.out.println("⬆️ Uploading to S3 → key: " + key);
+        String sanitizedEmail = email.replace("@", "_");
+        String key = "profile-pics/" + sanitizedEmail + "_" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-    try {
-        s3.putObject(
-            PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .contentType(file.getContentType())
-                .build(), 
-            RequestBody.fromInputStream(file.getInputStream(), file.getSize())
-        );
+        try {
+            s3.putObject(
+                PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build(),
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+            );
 
-
-        String url = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
-        System.out.println("✅ Upload success. File URL: " + url);
-        return url;
-    } catch (Exception e) {
-        System.err.println("❌ Upload to S3 failed: " + e.getMessage());
-        throw new RuntimeException("S3 upload failed", e);
+            return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
+        } catch (Exception e) {
+            throw new RuntimeException("S3 upload failed", e);
+        }
     }
-}
-}
+} 
