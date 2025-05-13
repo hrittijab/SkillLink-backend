@@ -4,11 +4,13 @@ import com.skilllink.model.User;
 import com.skilllink.repository.UserRepository;
 import com.skilllink.requests.PasswordChangeRequest;
 import com.skilllink.requests.PasswordVerifyRequest;
+import com.skilllink.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,6 +19,9 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Autowired
+    private S3Service s3Service;
 
     @Autowired
     public UserController(UserRepository userRepository) {
@@ -74,5 +79,53 @@ public class UserController {
         String normalizedEmail = email.trim().toLowerCase();
         userRepository.deleteUserByEmail(normalizedEmail);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PostMapping("/profile/setup")
+    public ResponseEntity<String> setupProfile(@RequestBody User user) {
+        String normalizedEmail = user.getEmail().trim().toLowerCase();
+        User existing = userRepository.getUserByEmail(normalizedEmail);
+
+        if (existing == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        existing.setFirstName(user.getFirstName());
+        existing.setLastName(user.getLastName());
+        existing.setBio(user.getBio());
+        existing.setSkillsOffered(user.getSkillsOffered());
+        existing.setSkillsWanted(user.getSkillsWanted());
+
+        if (user.getProfilePictureUrl() != null && !user.getProfilePictureUrl().isEmpty()) {
+            existing.setProfilePictureUrl(user.getProfilePictureUrl());
+        }
+
+        userRepository.updateUser(existing);
+        return ResponseEntity.ok("Profile setup successful");
+    }
+
+    @PostMapping("/upload-profile-picture")
+    public ResponseEntity<String> uploadProfilePicture(
+            @RequestParam("email") String email,
+            @RequestParam("file") MultipartFile file) {
+
+        try {
+            String normalizedEmail = email.trim().toLowerCase();
+            String url = s3Service.uploadProfilePicture(normalizedEmail, file);
+
+            User user = userRepository.getUserByEmail(normalizedEmail);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            user.setProfilePictureUrl(url);
+            userRepository.updateUser(user);
+
+            return ResponseEntity.ok(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload image");
+        }
     }
 }

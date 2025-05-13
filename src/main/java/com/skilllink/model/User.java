@@ -10,7 +10,7 @@ public class User {
     private String passwordHash;
     private String firstName;
     private String lastName;
-    private String profilePictureUrl; // Optional
+    private String profilePictureUrl; 
     private String bio;                
     private String skillsOffered;       
     private String skillsWanted;        

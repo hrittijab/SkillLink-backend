@@ -53,7 +53,7 @@ public class MessageController {
 
         if (latestMessages == null || latestMessages.isEmpty()) {
             System.out.println("🚫 No messages found. Returning empty JSON list.");
-            return List.of(); // return valid empty JSON array []
+            return List.of(); 
         }
 
         return latestMessages.stream().map(msg -> {

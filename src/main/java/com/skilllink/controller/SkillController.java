@@ -102,7 +102,7 @@ public class SkillController {
             item.put("price", skill.getPrice());
             item.put("exchangeSkills", skill.getExchangeSkills());
             item.put("createdAt", skill.getCreatedAt());
-            item.put("status", skill.getStatus()); // ✅ Include status in frontend
+            item.put("status", skill.getStatus()); 
 
             String normalizedEmail = skill.getUserEmail() != null
                     ? skill.getUserEmail().trim().toLowerCase()

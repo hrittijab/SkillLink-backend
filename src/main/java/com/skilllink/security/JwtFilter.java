@@ -33,7 +33,6 @@ protected void doFilterInternal(HttpServletRequest request,
     String path = request.getRequestURI();
     System.out.println("🔍 Request URI: " + path);
 
-    // ✅ Skip JWT check for public endpoints
     if (path.equals("/api/signup") ||
         path.equals("/api/login") ||
         path.equals("/api/messages/previews") ||

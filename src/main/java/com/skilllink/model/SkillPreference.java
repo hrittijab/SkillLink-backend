@@ -16,7 +16,7 @@ public class SkillPreference {
     private Double price;           // optional if PAID
     private List<String> exchangeSkills;
     private String createdAt;
-    private String status; // ✅ NEW FIELD
+    private String status; 
 
     public SkillPreference() {}
 

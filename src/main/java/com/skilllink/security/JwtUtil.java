@@ -35,7 +35,6 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    // Validate token integrity and expiry
     public boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()

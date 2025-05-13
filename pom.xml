@@ -43,6 +43,13 @@
             <version>2.1.1</version>
         </dependency>
 
+        <!-- ✅ AWS SDK: S3 -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.29</version>
+        </dependency>
+
         <!-- ✅ AWS SDK: DynamoDB -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -95,13 +102,13 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ✅ Spring Data JPA (for PostgreSQL + Entity support) -->
+        <!-- ✅ Spring Data JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- ✅ Jakarta Persistence API (Entity, Id, etc.) -->
+        <!-- ✅ Jakarta Persistence API -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>

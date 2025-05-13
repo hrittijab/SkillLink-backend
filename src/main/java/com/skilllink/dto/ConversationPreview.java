@@ -7,7 +7,7 @@ public class ConversationPreview {
     private String otherUserName;
     private String lastMessage;
     private Instant timestamp;
-    private String profilePictureUrl; // ✅ NEW
+    private String profilePictureUrl; 
 
     public ConversationPreview(String email, String name, String lastMessage, Instant timestamp, String profilePictureUrl) {
         this.otherUserEmail = email;

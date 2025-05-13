@@ -9,7 +9,7 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;  // ✅ Correct type
+    private UUID id; 
 
     private String senderEmail;
     private String receiverEmail;
