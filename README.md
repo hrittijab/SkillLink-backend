@@ -49,7 +49,7 @@ SkillLink is a mobile-first skill-exchange platform that empowers users to showc
 | Cloud Storage| AWS S3 (for profile images)                                     |
 | Dev Tools    | Git, GitHub, Postman, VS Code, Android Studio                   |
 
-[![Watch the demo](DemoPic.PNG)](https://drive.google.com/file/d/1vJofN8zcPZOiF8oIffu0-snSzbEJfZot/view?usp=drive_link)
+[![Watch the demo](DemoPic.png)](https://drive.google.com/file/d/1vJofN8zcPZOiF8oIffu0-snSzbEJfZot/view?usp=drive_link)
 
 
 Upcoming Features
