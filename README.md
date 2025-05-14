@@ -15,6 +15,7 @@ SkillLink is a mobile-first skill-exchange platform that empowers users to showc
   - Add bio, offered skills, and desired skills
   - Upload and edit profile picture
   - View other users’ profiles
+  - Pictures stored in AWS S3
 
 -  **Skill Posts**
   - Create, edit, and delete skill exchange posts
@@ -28,6 +29,7 @@ SkillLink is a mobile-first skill-exchange platform that empowers users to showc
   - Real-time chat using WebSockets
   - View all conversations in a dedicated screen
   - Message users directly from posts (except your own)
+  - All messages are stored in PostgreSQL
 
 -  **Backend Integration**
   - Spring Boot REST APIs
@@ -43,7 +45,7 @@ SkillLink is a mobile-first skill-exchange platform that empowers users to showc
 |--------------|-----------------------------------------------------------------|
 | Frontend     | React Native, Expo, React Navigation, AsyncStorage, SecureStore |
 | Backend      | Spring Boot, WebSocket (STOMP), JWT, BCrypt                     |
-| Database     | AWS DynamoDB                                                    |
+| Database     | AWS DynamoDB, PostgreSQL                                            |
 | Cloud Storage| AWS S3 (for profile images)                                     |
 | Dev Tools    | Git, GitHub, Postman, VS Code, Android Studio                   |
 
