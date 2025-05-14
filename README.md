@@ -45,9 +45,11 @@ SkillLink is a mobile-first skill-exchange platform that empowers users to showc
 |--------------|-----------------------------------------------------------------|
 | Frontend     | React Native, Expo, React Navigation, AsyncStorage, SecureStore |
 | Backend      | Spring Boot, WebSocket (STOMP), JWT, BCrypt                     |
-| Database     | AWS DynamoDB, PostgreSQL                                            |
+| Database     | AWS DynamoDB, PostgreSQL                                        |
 | Cloud Storage| AWS S3 (for profile images)                                     |
 | Dev Tools    | Git, GitHub, Postman, VS Code, Android Studio                   |
+
+**CLICK THE FOLLOWING PICTURE FOR THE DEMO VIDEO**
 
 [![Watch the demo](DemoPic.png)](https://drive.google.com/file/d/1vJofN8zcPZOiF8oIffu0-snSzbEJfZot/view?usp=drive_link)
 
