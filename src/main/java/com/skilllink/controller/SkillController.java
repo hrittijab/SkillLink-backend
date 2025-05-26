@@ -37,26 +37,38 @@ public class SkillController {
      * Adds a new skill post.
      */
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addSkill(@RequestBody SkillPreference skill) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            skill.setId(UUID.randomUUID().toString());
-            skill.setCreatedAt(Instant.now().toString());
+public ResponseEntity<Map<String, String>> addSkill(@RequestBody SkillPreference skill) {
+    Map<String, String> response = new HashMap<>();
+    try {
+        skill.setId(UUID.randomUUID().toString());
+        skill.setCreatedAt(Instant.now().toString());
 
-            if (skill.getUserEmail() != null) {
-                skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
-            }
-
-            skill.setStatus("ACTIVE");
-            skillRepository.saveSkill(skill);
-
-            response.put("message", "Skill added successfully!");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("message", "Failed to save skill: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        if (skill.getUserEmail() != null) {
+            skill.setUserEmail(skill.getUserEmail().trim().toLowerCase());
         }
+
+        // 🔒 Check if the user's profile is complete
+        User user = userRepository.getUserByEmail(skill.getUserEmail());
+        if (user == null ||
+            user.getFirstName() == null || user.getLastName() == null ||
+            user.getBio() == null || user.getSkillsOffered() == null ||
+            user.getSkillsWanted() == null) {
+
+            response.put("message", "Please complete your profile before posting a skill.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        skill.setStatus("ACTIVE");
+        skillRepository.saveSkill(skill);
+
+        response.put("message", "Skill added successfully!");
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        response.put("message", "Failed to save skill: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+}
+
 
     /**
      * Retrieves all skills posted by a specific user.
