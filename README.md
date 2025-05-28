@@ -55,8 +55,7 @@ Not everyone can afford paid classes — and that’s okay. That’s exactly why
 
 **CLICK THE FOLLOWING PICTURE FOR THE DEMO VIDEO**
 
-[![Watch the demo](DemoPic.png)](https://drive.google.com/file/d/1vJofN8zcPZOiF8oIffu0-snSzbEJfZot/view?usp=drive_link)
-
+[![Watch the demo](DemoPic.png)](https://youtu.be/l-zmKJVeKeo)
 
 Upcoming Features
 - Push notifications for new messages
